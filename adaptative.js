@@ -30,7 +30,19 @@ then enjoy the framework
 
 
 ///////////////class HElper Usage /////////////////
+/*
+this is the simple framework usage 
+1- for the AJAX requester
+you just have to do this
+var a = new AJAX();
+a.send(METHOD(POST, GET), url, errorCallback, successCallback)
+2-for the DOM
+var d = new DOM(identifier(#myId, .myClass, p))
+d.css for css setting
+d.click for click event 
+d. ...
 
+*/
 //		simple ajax sender without parameters
 		var req = new AJAX();
 // a simple DOM initializer	
