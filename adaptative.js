@@ -1,210 +1,23 @@
-	
-
-	// js
-
-	setTimeout(function(){
-		function addBlocEvents(){
-			var blocs = document.querySelectorAll('.great-bloc');
-			for (var i = blocs.length - 1; i >= 0; i--) {
-				blocs[i].addEventListener('click', function(){
-					window.location.href = "#"+this.getAttribute('data-url');	
-				})
-			}
-		}
-
-		function addTextareaEvents(){
-			var textarea = document.querySelectorAll(".form-field");
-
-			for (var i = textarea.length - 1; i >= 0; i--) {
-				textarea[i].addEventListener('focus', function(){
-					//this.style.position = "absolute";
-				});
-			}
-
-			// gerer after
-			
-			var dropdowns = document.querySelectorAll(".dropdown-header");
-			for (var i = dropdowns.length - 1; i >= 0; i--) {
-				dropdowns[i].onclick = function(){
-					if(document.querySelector(".dropdown-main").style.display == "none"){
-						document.querySelector(".dropdown-main").style.display = "block";
-					}else{
-						document.querySelector(".dropdown-main").style.display = "none";
-					}
-				}
-			}
-
-		}
-
-
-		function LearnFileGestion(inputText, inputFile){
-
-			var file = inputFile.files[0];
-
-				var reader = new FileReader();
-
-				reader.addEventListener('load', function()
-				{
-					inputText.value = reader.result;
-				}, false);
-
-				reader.readAsText(file);
-
-		}
-
-		////////////////////////////////// IA /////////////////////////////////
-
-		function addLearnEvents(){
-
-			///////////////////// events //////////////////////////
-			var file = document.querySelector("#file_input");
-			var loadBtn = document.querySelector("#learn-load");
-			// ia
-			loadBtn.addEventListener("click", function(){
-				file.click();
-			});
-			file.addEventListener('change', function(){
-				LearnFileGestion(document.querySelector("#learn-input"), file);
-			})
-			var fields = [document.querySelector("#learn-pre")
-			, document.querySelector("#learn-target")
-			, document.querySelector("#learn-post")
-			, document.querySelector("#learn-others")
-			];
-			var probability = {
-					pre : {
-						post : 0,
-						target : 0,
-						pre : 0,
-						others : 0,
-					},
-					post : {
-						post : 0,
-						target : 0,
-						pre : 0,
-						others : 0,
-					},
-					target : {
-						post : 0,
-						target : 0,
-						pre : 0,
-						others : 0,
-					},
-					others : {
-						post : 0,
-						target : 0,
-						pre : 0,
-						others : 0,
-					}
-				};
-			if (localStorage.getItem("generalParams") == null) {
-				var generalParams = probability;
-			}else{
-				console.log("general params have been found in this storage");
-				var generalParams = JSON.parse(localStorage.getItem("generalParams"));
-			}
-			var params = {
-				pre : [],
-				post : [],
-				target : [],
-				others : []
-			};
-			var hiddenParams = {
-				pre : {
-					items : [],
-					length : 0
-				},
-				post : {
-					items : [],
-					length : 0
-				},
-				target : {
-					items : [],
-					length : 0
-				},
-				others : {
-					items : [],
-					length : 0
-				}
-			};
-
-			var hiddenParamsProbability = {
-				pre : {
-					items : [],
-				},
-				post : {
-					items : [],
-				},
-				target : {
-					items : [],
-				},
-				others : {
-					items : [],
-				}
-			};
-
-			if (localStorage.getItem("hiddenModel") == null) {
-				var hiddenModel = hiddenParams;		
-			}else{
-				console.log(" hidden model have been found in this storage");
-				var hiddenModel = JSON.parse(localStorage.getItem("hiddenModel"));
-			}
-			var btns = {
-				configure : document.querySelector("#learn-configure"),
-				update : document.querySelector("#learn-update")
-			};
-			var model = ["pre", "post", "target", "others"];
-			var textarea = document.querySelector("#learn-input");
-			var output = document.querySelector("#viewer-zone");
-
-			var numParameters = {	
-				generalParams : generalParams,
-				probability : probability,
-				initialParams : {
-					pre:1,
-					target: 0,
-					post : 0,
-					others : 0
-				}
-			};
-			var identifiers = {
-					params : params,
-					hiddenModel : hiddenModel,
-					hiddenParamsProbability : hiddenParamsProbability
-				};
-			var uneticatedState = "target";
-
-			var ia = new IA(identifiers, model, numParameters, uneticatedState);
-			ia.learn(fields, btns, textarea, output);
-			
-			var extract = document.querySelector("#learn-extract");
-			extract.onclick = function(){
-				ia.extract(textarea.value);
-			}
-
-			function changeConfigValue(input){
-				var newValue;
-				newValue = parseFloat(prompt("Veuillez entrer la nouvelle valeur"));
-				if (newValue > 1) {
-					alert('impossible ');
-				}
-				else{
-					input.innerHTML= newValue;
-				}
-
-			}
-		}
-
 
 		//////////////////////////////////////////Routing///////////////////////////////////////////////
+/*
+this is the simple framework usage 
+1- into your html file set the receiver div by giving him the #views id
+2-setInitialPath manuely or programaticaly with the setInitialPath method
+3- then define routes as define below
+4- add linked as <a href="#extraction">link</a>
+then enjoy the framework
+*/
 
 		var route = new Routing();
 
-
-		route.when("extraction", "extraction.html", addTextareaEvents)
+// extraction represent the hash part of the url . extraction.html represent the file name when wha have set the filePath via route.setFilePath, and addTextareaEvent represent the function to be execute after page loading
+			route.setInitialPath("./partials");
+			route.when("extraction", "extraction.html", addTextareaEvents)
 			 .when("inscription", "inscription.html")
 			 .when("connexion", "connexion.html")
 			 .when("learning", "learning.html", addLearnEvents)
+// represent the default route
 			 .when(undefined, "home.html", addBlocEvents)
 			 .when("home", "home.html", addBlocEvents)
 			 .when("404", "404.html", addBlocEvents)
@@ -215,16 +28,18 @@
 			route.run();
 		}
 
-	}, 500)
 
+///////////////class HElper Usage /////////////////
 
-
-	function helping(){
-
+//		simple ajax sender without parameters
 		var req = new AJAX();
+// a simple DOM initializer	
 		var receiver =  new DOM('#receiver');
+// seting cs property		
 		receiver.css("display : block");
+// fading out		
 		receiver.fadeOut();
+		
 		function error(data){
 			console.log("error");
 			receiver.fadeIn();
@@ -232,15 +47,12 @@
 		}
 
 		function success(data){
-			console.log("success");
+			
 			receiver.html(data);
-			document.body.style.overflow = 'hidden';
-			//setTimeout(function(){
-				console.log(receiver);
-				receiver.fadeIn();
-			//}, 1000);
+			
 			var skip =  new DOM('.skip-btn');
 			var next =  new DOM('.next-btn');
+// adding click event on a DOM object
 			skip.click(function(){
 				receiver.fadeOut();
 				document.body.style.overflow = 'auto';
@@ -250,15 +62,8 @@
 
 			});
 			next.click(function(){
-				req.send('GET', "./partials/welcome-2.html",error, success);
+				req.send('GET', "path/tp/file",error, success);
 			});
 		}
-		req.send('GET', "./partials/welcome.html",error, success);
-	}	
-
-	if(localStorage.getItem('firstLaunch') == null){
-		setTimeout(function(){
-			helping();
-		}, 3000);
-		localStorage.setItem('firstLaunch', true);
-	}
+		// sending a request
+		req.send('GET', "path/to/file",error, success);
