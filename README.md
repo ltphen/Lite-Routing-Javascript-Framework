@@ -2,11 +2,14 @@
 
 a simple lite routing framework in javacsript for single page applications
 <p>
-this is the simple framework usage <br>
-1- into your html file set the receiver div by giving him the #views id<br>
+this is the simple framework usage <br>1- into your html file set the receiver div by giving him the #views id<br>
 2-setInitialPath manuely or programaticaly with the setInitialPath method<br>
 3- then define routes as define below<br>
-4- add linked as <a href="#extraction">link</a><br>
+4- add linked as 
+    
+    <a href="#extraction">link</a><br>
+ 
+ 
 then enjoy the framework
 </p>
 <pre>
